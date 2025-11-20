@@ -277,18 +277,30 @@ class ParticipantController extends Controller
     /**
      * Display quizzes.
      */
-    public function indexQuizzes()
+    public function indexQuizzes(Request $request)
     {
         $user = Auth::user();
         
-        // Get quizzes for enrolled courses
-        $quizzes = Kuis::whereHas('modul.kursus.moduls.progresPesertas', function ($query) use ($user) {
+        // Base query for quizzes
+        $query = Kuis::whereHas('modul.kursus.moduls.progresPesertas', function ($query) use ($user) {
             $query->where('user_id', $user->id);
         })->with(['modul.kursus', 'modul.progresPesertas' => function ($query) use ($user) {
             $query->where('user_id', $user->id);
-        }])->get();
+        }]);
         
-        return view('layouts.peserta.quizzes.index', compact('quizzes'));
+        // Apply category filter
+        if ($request->has('kategori') && $request->kategori) {
+            $query->whereHas('modul.kursus', function ($subQuery) use ($request) {
+                $subQuery->where('kategori_id', $request->kategori);
+            });
+        }
+        
+        $quizzes = $query->get();
+        
+        // Get all categories for filter dropdown
+        $categories = Kategori::all();
+        
+        return view('layouts.peserta.quizzes.index', compact('quizzes', 'categories'));
     }
 
     /**

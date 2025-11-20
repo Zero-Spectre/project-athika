@@ -36,6 +36,8 @@
                 @if($modul->tipe_materi == 'Artikel')
                     <div class="mb-4">
                         {!! $modul->konten_teks !!}
+
+                     
                     </div>
                 @elseif($modul->tipe_materi == 'Video')
                     @if($modul->url_video)

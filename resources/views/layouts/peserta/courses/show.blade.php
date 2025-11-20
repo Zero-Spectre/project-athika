@@ -69,6 +69,10 @@
                                 @if($module->tipe_materi == 'Artikel')
                                     <div class="mb-3">
                                         {!! $module->konten_teks !!}
+                                        <br>
+                                        <br>
+                                        sumber:
+                                        {!! $module->penjelasan !!}
                                     </div>
                                 @elseif($module->tipe_materi == 'Video')
                                     @if($module->url_video)
